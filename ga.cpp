@@ -4,13 +4,20 @@
 #include <vector>
 #include <algorithm>
 
-const int NUM = 100000;       // number of solutions per generation
+const int NUM = 60000;        // number of solutions per generation
 const int SAMPLE_SIZE = 1000; // how many top solutions for mutation/cross
 int max_generations = 100;    // max number of generations to calculate (while loop)
 
 struct Solution
 {
     double rank, x, y, z;
+
+    Solution(double in_r, double in_x, double in_y, double in_z)
+        : rank(in_r), x(in_x), y(in_y), z(in_z)
+    {
+        // run our fitness function right at constructor
+        fitness();
+    }
 
     // the closer f(x,y,z) is to zero, the higher the rank
     void fitness()
@@ -36,18 +43,13 @@ int main()
     {
         max_generations--;
 
-        // run our fitness function
-        for (auto &s : solutions)
-        {
-            s.fitness();
-        }
-
         // sort our solutions by rank
         std::sort(solutions.begin(), solutions.end(), [](const auto &left, const auto &right)
                   { return left.rank > right.rank; });
 
         // print top solutions
-        std::for_each(solutions.begin(), solutions.begin() + 10, [](const auto &s)
+        std::cout << "Generation " << max_generations << " ================== " << std::endl;
+        std::for_each(solutions.begin(), solutions.begin() + 2, [](const auto &s)
                       { std::cout << std::fixed
                                   << "Rank " << static_cast<int>(s.rank)
                                   << "\nx=" << s.x << "\ny=" << s.y << "\nz=" << s.z << "\n"
