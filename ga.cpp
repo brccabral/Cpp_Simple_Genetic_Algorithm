@@ -45,4 +45,30 @@ int main()
                               << "Rank " << static_cast<int>(s.rank)
                               << "\nx=" << s.x << "\ny=" << s.y << "\nz=" << s.z << "\n"
                               << std::endl; });
+
+    // take top solutions
+    const int SAMPLE_SIZE = 1000;
+    std::vector<Solution> sample;
+    std::copy(solutions.begin(), solutions.begin() + SAMPLE_SIZE, std::back_inserter(sample));
+    solutions.clear();
+
+    // mutate the top solutions by 1%
+    std::uniform_real_distribution<double> m(0.99, 1.01);
+    std::for_each(sample.begin(), sample.end(), [&](auto &s)
+                  {
+        s.x *= m(device);
+        s.y *= m(device);
+        s.z *= m(device); });
+
+    // cross over
+    std::uniform_int_distribution<int> cross(0, SAMPLE_SIZE - 1);
+    // mix SAMPLE_SIZE objects to generate NUM amount of new objects
+    for (int i = 0; i < NUM; i++)
+    {
+        solutions.push_back(Solution{
+            0,
+            sample[cross(device)].x,
+            sample[cross(device)].y,
+            sample[cross(device)].z});
+    }
 }
