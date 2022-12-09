@@ -4,6 +4,10 @@
 #include <vector>
 #include <algorithm>
 
+const int NUM = 100000;       // number of solutions per generation
+const int SAMPLE_SIZE = 1000; // how many top solutions for mutation/cross
+int max_generations = 100;    // max number of generations to calculate (while loop)
+
 struct Solution
 {
     double rank, x, y, z;
@@ -23,14 +27,15 @@ int main()
     std::uniform_real_distribution<double> unif(-100, 100);
     std::vector<Solution> solutions;
 
-    const int NUM = 100000;
     for (int i = 0; i < NUM; i++)
     {
         solutions.push_back(Solution{0, unif(device), unif(device), unif(device)});
     }
 
-    while (true)
+    while (max_generations > 0)
     {
+        max_generations--;
+
         // run our fitness function
         for (auto &s : solutions)
         {
@@ -49,7 +54,6 @@ int main()
                                   << std::endl; });
 
         // take top solutions
-        const int SAMPLE_SIZE = 1000;
         std::vector<Solution> sample;
         std::copy(solutions.begin(), solutions.begin() + SAMPLE_SIZE, std::back_inserter(sample));
         solutions.clear();
